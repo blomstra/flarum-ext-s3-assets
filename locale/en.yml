@@ -1,0 +1,7 @@
+blomstra-s3-assets:
+  admin:
+    settings:
+      s3key:
+        label: Key
+        help: help
+
