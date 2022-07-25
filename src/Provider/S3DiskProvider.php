@@ -14,6 +14,11 @@ use Illuminate\Support\Str;
 
 class S3DiskProvider extends AbstractServiceProvider
 {
+    /**
+     * @var boolean
+     */
+    protected $failedValidation = false;
+    
     public function register()
     {
         $this->container->extend('config', function (Repository $config) {
@@ -26,23 +31,29 @@ class S3DiskProvider extends AbstractServiceProvider
             $filesystems = $this->illuminateFilesystemsConfig();
             $s3 = Arr::get($filesystems, 'disks.s3');
 
-            foreach ($this->getFlarumDisks() as $disk => $closure) {
-                /** @var array $diskConfig */
-                $diskConfig = $closure($paths, $url);
-
-                $filesystems['disks'][$disk] = array_merge($s3, [
-                    'root' => Str::afterLast($diskConfig['root'], '/'),
-                    'visibility' => 'public',
-                ]);
+            if (! $this->configValid($s3)) {
+                // When validation fails, we don't extend the configuration, leave the disks 'as-was'
+                // so that the forum is still accessible.
+                $this->failedValidation = true;
+            } else {
+                foreach ($this->getFlarumDisks() as $disk => $closure) {
+                    /** @var array $diskConfig */
+                    $diskConfig = $closure($paths, $url);
+    
+                    $filesystems['disks'][$disk] = array_merge($s3, [
+                        'root' => Str::afterLast($diskConfig['root'], '/'),
+                        'visibility' => 'public',
+                    ]);
+                }
+    
+                $config->set('filesystems', $filesystems);
             }
-
-            $config->set('filesystems', $filesystems);
 
             return $config;
         });
 
         $this->container->extend('filesystem', function (\Flarum\Filesystem\FilesystemManager $manager) {
-            return new FilesystemManager($this->container);
+            return $this->failedValidation ? $manager : new FilesystemManager($this->container);
         });
 
         $this->container->singleton('filesystem.disk', function (Container $container) {
@@ -77,11 +88,21 @@ class S3DiskProvider extends AbstractServiceProvider
      */
     protected function illuminateFilesystemsConfig(): array
     {
-        // TODO: Run the array via a validator.
-
         /** @var SettingsRepositoryInterface $settings */
         $settings = resolve(SettingsRepositoryInterface::class);
         // Sharing settings keys with fof/upload.
+
+        $bucket = env('AWS_BUCKET', $settings->get('fof-upload.awsS3Bucket'));
+        $region = env('AWS_DEFAULT_REGION', $settings->get('fof-upload.awsS3Region'));
+        $cdnUrl = env('AWS_URL', $settings->get('fof-upload.cdnUrl'));
+        $pathStyle = env('AWS_PATH_STYLE_ENDPOINT', (bool) $settings->get('fof-upload.awsS3UsePathStyleEndpoint'));
+
+        if (! $cdnUrl) {
+            $cdnUrl = sprintf('https://%s.s3.%s.amazonaws.com', $bucket, $region);
+            $pathStyle = false;
+        }
+
+        $setByEnv = (bool) (env('AWS_ACCESS_KEY_ID') || env('AWS_SECRET_ACCESS_KEY') || env('AWS_ENDPOINT'));
 
         return [
             'default' => 's3',
@@ -90,13 +111,20 @@ class S3DiskProvider extends AbstractServiceProvider
                     'driver' => 's3',
                     'key' => env('AWS_ACCESS_KEY_ID', $settings->get('fof-upload.awsS3Key')),
                     'secret' => env('AWS_SECRET_ACCESS_KEY', $settings->get('fof-upload.awsS3Secret')),
-                    'region' => env('AWS_DEFAULT_REGION', $settings->get('fof-upload.awsS3Region')),
-                    'bucket' => env('AWS_BUCKET', $settings->get('fof-upload.awsS3Bucket')),
-                    'url' => env('AWS_URL', $settings->get('fof-upload.cdnUrl')),
+                    'region' => $region,
+                    'bucket' => $bucket,
+                    'url' => $cdnUrl,
                     'endpoint' => env('AWS_ENDPOINT', $settings->get('fof-upload.awsS3Endpoint')),
-                    'use_path_style_endpoint' => env('AWS_PATH_STYLE_ENDPOINT', (bool) $settings->get('fof-upload.awsS3UsePathStyleEndpoint'))
+                    'use_path_style_endpoint' => $pathStyle,
+                    'set_by_environment' => $setByEnv,
                 ],
             ]
         ];
+    }
+
+    protected function configValid(array $s3Config): bool
+    {
+        //dd($s3Config);
+        return true;
     }
 }
