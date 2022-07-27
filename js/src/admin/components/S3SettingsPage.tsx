@@ -3,7 +3,7 @@ import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 
 export default class S3SettingsPage extends ExtensionPage {
   content() {
-    const s3SetByEnv = !app.data.s3SetByEnv;
+    const s3SetByEnv = app.data.s3SetByEnv;
 
     return (
       <div className="ExtensionPage--settings">
