@@ -9,7 +9,7 @@ export default class S3SettingsPage extends ExtensionPage {
       <div className="ExtensionPage--settings">
         <div className="container">
           {s3SetByEnv ? (
-            <h3 className='ExtensionPage-subHeader'>{app.translator.trans('blomstra-s3-assets.admin.settings.configured_by_environment')}</h3>
+            <h3 className="ExtensionPage-subHeader">{app.translator.trans('blomstra-s3-assets.admin.settings.configured_by_environment')}</h3>
           ) : (
             <div className="Form-group">
               <h3>{app.translator.trans('blomstra-s3-assets.admin.settings.aws-section')}</h3>
