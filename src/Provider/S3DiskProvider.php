@@ -19,7 +19,7 @@ class S3DiskProvider extends AbstractServiceProvider
      */
     protected $failedValidation = false;
     
-    public function register()
+    public function boot()
     {
         $this->container->extend('config', function (Repository $config) {
             /** @var Paths $paths */
@@ -96,7 +96,7 @@ class S3DiskProvider extends AbstractServiceProvider
         $region = env('AWS_DEFAULT_REGION', $settings->get('fof-upload.awsS3Region'));
         $cdnUrl = env('AWS_URL', $settings->get('fof-upload.cdnUrl'));
         $pathStyle = env('AWS_PATH_STYLE_ENDPOINT', (bool) $settings->get('fof-upload.awsS3UsePathStyleEndpoint'));
-
+        
         if (! $cdnUrl) {
             $cdnUrl = sprintf('https://%s.s3.%s.amazonaws.com', $bucket, $region);
             $pathStyle = false;
