@@ -1,7 +1,5 @@
 # S3 Assets
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/blomstra/s3-assets.svg)](https://packagist.org/packages/blomstra/s3-assets) [![Total Downloads](https://img.shields.io/packagist/dt/blomstra/s3-assets.svg)](https://packagist.org/packages/blomstra/s3-assets)
-
 A [Flarum](http://flarum.org) extension. Relocate Flarum disks onto S3 or compatible bucket
 
 ## Installation
@@ -45,6 +43,5 @@ php flarum s3:move
 
 ## Links
 
-- [Packagist](https://packagist.org/packages/blomstra/s3-assets)
-- [GitHub](https://github.com/blomstra/s3-assets)
+- [Extiverse](https://extiverse.com/extension/blomstra/s3-assets)
 - [Discuss](https://discuss.flarum.org/d/PUT_DISCUSS_SLUG_HERE)
