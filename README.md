@@ -30,6 +30,7 @@ The S3 (or compatible) bucket can be configured either by environment variables 
 - `AWS_BUCKET` - the bucket name
 - `AWS_URL` - the public facing base URL of the bucket
 - `AWS_ENDPOINT` - the ARN
+- `AWS_ACL` - The ACL, if any, that should be applied to the uploaded object (default: private). For possible values, see [AWS Docs](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl) 
 - `AWS_PATH_STYLE_ENDPOINT` - boolean value
 
 #### Transferring assets from the existing filesystem to the S3 bucket

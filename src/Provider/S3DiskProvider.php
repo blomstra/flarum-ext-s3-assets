@@ -41,8 +41,7 @@ class S3DiskProvider extends AbstractServiceProvider
                     $diskConfig = $closure($paths, $url);
     
                     $filesystems['disks'][$disk] = array_merge($s3, [
-                        'root' => Str::afterLast($diskConfig['root'], '/'),
-                        'visibility' => 'public',
+                        'root' => Str::afterLast($diskConfig['root'], '/')
                     ]);
                 }
     
@@ -116,6 +115,7 @@ class S3DiskProvider extends AbstractServiceProvider
                     'url' => $cdnUrl,
                     'endpoint' => env('AWS_ENDPOINT', $settings->get('fof-upload.awsS3Endpoint')),
                     'use_path_style_endpoint' => $pathStyle,
+                    'visibility' => env('AWS_ACL', $settings->get('fof-upload.awsS3ACL')),
                     'set_by_environment' => $setByEnv,
                 ],
             ]

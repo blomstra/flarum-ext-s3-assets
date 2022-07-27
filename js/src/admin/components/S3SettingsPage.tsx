@@ -37,6 +37,12 @@ export default class S3SettingsPage extends ExtensionPage {
                 label: app.translator.trans('blomstra-s3-assets.admin.settings.s3bucket.label'),
                 help: app.translator.trans('blomstra-s3-assets.admin.settings.s3bucket.help'),
               })}
+              {this.buildSettingComponent({
+                setting: 'fof-upload.awsS3ACL',
+                type: 'string',
+                label: app.translator.trans('blomstra-s3-assets.admin.settings.s3acl.label'),
+                help: app.translator.trans('blomstra-s3-assets.admin.settings.s3acl.help'),
+              })}
               <h3>{app.translator.trans('blomstra-s3-assets.admin.settings.s3-compatible-section')}</h3>
               <p className="helpText">{app.translator.trans('blomstra-s3-assets.admin.settings.s3-compatible-section-help')}</p>
               {this.buildSettingComponent({
