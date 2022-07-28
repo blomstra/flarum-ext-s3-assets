@@ -39,12 +39,15 @@ class S3DiskProvider extends AbstractServiceProvider
                 foreach ($this->getFlarumDisks() as $disk => $closure) {
                     /** @var array $diskConfig */
                     $diskConfig = $closure($paths, $url);
+
+                    // Maintain compatibility with previous implementations where profile covers used 'profile-covers' for the root, rather than 'covers'.
+                    $root = $disk === 'sycho-profile-cover' ? 'profile-covers' : Str::afterLast($diskConfig['root'], '/');
     
                     $filesystems['disks'][$disk] = array_merge($s3, [
-                        'root' => Str::afterLast($diskConfig['root'], '/')
+                        'root' => $root
                     ]);
                 }
-    
+
                 $config->set('filesystems', $filesystems);
             }
 
