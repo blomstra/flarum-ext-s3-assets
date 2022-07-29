@@ -94,31 +94,31 @@ class S3DiskProvider extends AbstractServiceProvider
         $settings = resolve(SettingsRepositoryInterface::class);
         // Sharing settings keys with fof/upload.
 
-        $bucket = getenv('AWS_BUCKET') ?? $settings->get('fof-upload.awsS3Bucket');
-        $region = getenv('AWS_DEFAULT_REGION') ?? $settings->get('fof-upload.awsS3Region');
-        $cdnUrl = getenv('AWS_URL') ?? $settings->get('fof-upload.cdnUrl');
-        $pathStyle = (bool) (getenv('AWS_PATH_STYLE_ENDPOINT') ?? $settings->get('fof-upload.awsS3UsePathStyleEndpoint'));
+        $bucket = env('AWS_BUCKET', $settings->get('fof-upload.awsS3Bucket'));
+        $region = env('AWS_DEFAULT_REGION', $settings->get('fof-upload.awsS3Region'));
+        $cdnUrl = env('AWS_URL', $settings->get('fof-upload.cdnUrl'));
+        $pathStyle = (bool) (env('AWS_PATH_STYLE_ENDPOINT', $settings->get('fof-upload.awsS3UsePathStyleEndpoint')));
         
         if (! $cdnUrl) {
             $cdnUrl = sprintf('https://%s.s3.%s.amazonaws.com', $bucket, $region);
             $pathStyle = false;
         }
 
-        $setByEnv = (bool) (getenv('AWS_ACCESS_KEY_ID') || getenv('AWS_SECRET_ACCESS_KEY') || getenv('AWS_ENDPOINT'));
+        $setByEnv = (bool) (env('AWS_ACCESS_KEY_ID') || env('AWS_SECRET_ACCESS_KEY') || env('AWS_ENDPOINT'));
 
         return [
             'default' => 's3',
             'disks' => [
                 's3' => [
                     'driver' => 's3',
-                    'key' => getenv('AWS_ACCESS_KEY_ID') ?? $settings->get('fof-upload.awsS3Key'),
-                    'secret' => getenv('AWS_SECRET_ACCESS_KEY') ?? $settings->get('fof-upload.awsS3Secret'),
+                    'key' => env('AWS_ACCESS_KEY_ID', $settings->get('fof-upload.awsS3Key')),
+                    'secret' => env('AWS_SECRET_ACCESS_KEY', $settings->get('fof-upload.awsS3Secret')),
                     'region' => $region,
                     'bucket' => $bucket,
                     'url' => $cdnUrl,
-                    'endpoint' => getenv('AWS_ENDPOINT') ?? $settings->get('fof-upload.awsS3Endpoint'),
+                    'endpoint' => env('AWS_ENDPOINT', $settings->get('fof-upload.awsS3Endpoint')),
                     'use_path_style_endpoint' => $pathStyle,
-                    'visibility' => getenv('AWS_ACL') ?? $settings->get('fof-upload.awsS3ACL'),
+                    'visibility' => env('AWS_ACL', $settings->get('fof-upload.awsS3ACL')),
                     'set_by_environment' => $setByEnv,
                 ],
             ]
