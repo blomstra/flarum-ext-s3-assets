@@ -31,6 +31,8 @@ The S3 (or compatible) bucket can be configured either by environment variables 
 - `AWS_ACL` - The ACL, if any, that should be applied to the uploaded object (default: private). For possible values, see [AWS Docs](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl) 
 - `AWS_PATH_STYLE_ENDPOINT` - boolean value
 
+If you plan to setup the S3 configuration using the environment variables, please ensure these are set _before_ enabling the extension
+
 #### Transferring assets from the existing filesystem to the S3 bucket
 
 After your new bucket is configured, any exisiting files, will not exist there (ie uploaded avatars, profile covers, etc).
