@@ -97,7 +97,7 @@ class S3DiskProvider extends AbstractServiceProvider
         $bucket = getenv('AWS_BUCKET') ?? $settings->get('fof-upload.awsS3Bucket');
         $region = getenv('AWS_DEFAULT_REGION') ?? $settings->get('fof-upload.awsS3Region');
         $cdnUrl = getenv('AWS_URL') ?? $settings->get('fof-upload.cdnUrl');
-        $pathStyle = getenv('AWS_PATH_STYLE_ENDPOINT') ?? (bool) $settings->get('fof-upload.awsS3UsePathStyleEndpoint');
+        $pathStyle = (bool) (getenv('AWS_PATH_STYLE_ENDPOINT') ?? (bool) $settings->get('fof-upload.awsS3UsePathStyleEndpoint'));
         
         if (! $cdnUrl) {
             $cdnUrl = sprintf('https://%s.s3.%s.amazonaws.com', $bucket, $region);
