@@ -2,6 +2,7 @@
 
 namespace Blomstra\S3Assets\Frontend;
 
+use Flarum\Frontend\Compiler\RevisionCompiler;
 use Flarum\Frontend\Compiler\VersionerInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Support\Arr;
@@ -28,11 +29,7 @@ class Versioner implements VersionerInterface
             $manifest = [];
         }
 
-        if ($revision) {
-            $manifest[$file] = $revision;
-        } else {
-            $this->settings->delete(self::REVISION_KEY);
-        }
+        $manifest[$file] = $revision = $revision ?? RevisionCompiler::EMPTY_REVISION;
 
         $this->settings->set(self::REVISION_KEY, json_encode($manifest));
     }
