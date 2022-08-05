@@ -2,13 +2,14 @@
 
 namespace Blomstra\S3Assets\Frontend;
 
+use Flarum\Frontend\Compiler\JsCompiler;
 use Flarum\Frontend\Compiler\LessCompiler;
 
 class Assets extends \Flarum\Frontend\Assets
 {
     protected function makeLessCompiler(string $filename): LessCompiler
     {
-        $compiler = new Compilers\LessCompiler($this->assetsDir, $filename, resolve(Versioner::class));
+        $compiler = new LessCompiler($this->assetsDir, $filename, resolve(Versioner::class));
 
         if ($this->cacheDir) {
             $compiler->setCacheDir($this->cacheDir.'/less');
@@ -31,8 +32,8 @@ class Assets extends \Flarum\Frontend\Assets
         return $compiler;
     }
 
-    protected function makeJsCompiler(string $filename)
+    protected function makeJsCompiler(string $filename): JsCompiler
     {
-        return new Compilers\JsCompiler($this->assetsDir, $filename, resolve(Versioner::class));
+        return new JsCompiler($this->assetsDir, $filename, resolve(Versioner::class));
     }
 }
