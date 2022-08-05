@@ -2,8 +2,10 @@
 
 namespace Blomstra\S3Assets\Provider;
 
+use Blomstra\S3Assets\Frontend\Versioner;
 use Flarum\Foundation\AbstractServiceProvider;
 use Flarum\Foundation\Paths;
+use Flarum\Frontend\Compiler\VersionerInterface;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Config\Repository;
@@ -18,6 +20,14 @@ class S3DiskProvider extends AbstractServiceProvider
      * @var boolean
      */
     protected $failedValidation = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register()
+    {
+        $this->container->bind(VersionerInterface::class, Versioner::class);
+    }
     
     public function boot()
     {

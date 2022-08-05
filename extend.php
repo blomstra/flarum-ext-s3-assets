@@ -22,8 +22,7 @@ return [
     new Extend\Locales(__DIR__.'/locale'),
 
     (new Extend\ServiceProvider())
-        ->register(Provider\S3DiskProvider::class)
-        ->register(Provider\FrontendServiceProvider::class),
+        ->register(Provider\S3DiskProvider::class),
 
     (new Extend\Console())
         ->command(Console\MoveAssetsCommand::class),
