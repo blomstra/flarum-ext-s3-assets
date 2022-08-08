@@ -2,8 +2,10 @@
 
 namespace Blomstra\S3Assets\Provider;
 
+use Blomstra\S3Assets\Frontend\Versioner;
 use Flarum\Foundation\AbstractServiceProvider;
 use Flarum\Foundation\Paths;
+use Flarum\Frontend\Compiler\VersionerInterface;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Config\Repository;
@@ -19,6 +21,13 @@ class S3DiskProvider extends AbstractServiceProvider
      */
     protected $failedValidation = false;
     
+    public function register()
+    {
+        // This won't work until ?Flarum 1.5 - see https://github.com/flarum/framework/issues/3583
+        // Until then, we have to implement our own `Assets` from `FrontendServiceProvider`
+        //$this->container->bind(VersionerInterface::class, Versioner::class);
+    }
+
     public function boot()
     {
         $this->container->extend('config', function (Repository $config) {
