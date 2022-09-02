@@ -15,12 +15,12 @@ class Versioner implements VersionerInterface
     protected $settings;
 
     const REVISION_KEY = 's3assets.revision';
-    
+
     public function __construct(SettingsRepositoryInterface $settings)
     {
         $this->settings = $settings;
     }
-    
+
     public function putRevision(string $file, ?string $revision): void
     {
         if ($storedManifest = $this->settings->get(self::REVISION_KEY)) {
@@ -29,7 +29,7 @@ class Versioner implements VersionerInterface
             $manifest = [];
         }
 
-        $manifest[$file] = $revision = $revision ?? RevisionCompiler::EMPTY_REVISION;
+        $manifest[$file] = $revision ?? RevisionCompiler::EMPTY_REVISION;
 
         $this->settings->set(self::REVISION_KEY, json_encode($manifest));
     }
