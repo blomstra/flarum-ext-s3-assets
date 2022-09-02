@@ -29,7 +29,11 @@ class Versioner implements VersionerInterface
             $manifest = [];
         }
 
-        $manifest[$file] = $revision ?? RevisionCompiler::EMPTY_REVISION;
+        if ($revision) {
+            $manifest[$file] = $revision;
+        } else {
+            unset($manifest[$file]);
+        }
 
         $this->settings->set(self::REVISION_KEY, json_encode($manifest));
     }
