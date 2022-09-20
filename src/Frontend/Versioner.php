@@ -23,11 +23,7 @@ class Versioner implements VersionerInterface
 
     public function putRevision(string $file, ?string $revision): void
     {
-        if ($storedManifest = $this->settings->get(self::REVISION_KEY)) {
-            $manifest = json_decode($storedManifest, true);
-        } else {
-            $manifest = [];
-        }
+        $manifest = $this->getManifest();
 
         if ($revision) {
             $manifest[$file] = $revision;
@@ -40,14 +36,11 @@ class Versioner implements VersionerInterface
 
     public function getRevision(string $file): ?string
     {
-        $storedManifest = $this->settings->get(self::REVISION_KEY);
+        return Arr::get($this->getManifest(), $file);
+    }
 
-        if ($storedManifest) {
-            $manifest = json_decode($storedManifest, true);
-
-            return Arr::get($manifest, $file);
-        }
-
-        return null;
+    private function getManifest(): array
+    {
+        return json_decode($this->settings->get(self::REVISION_KEY, '{}'), true);
     }
 }

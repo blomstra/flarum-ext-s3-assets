@@ -14,7 +14,6 @@ use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Factory;
-use Illuminate\Validation\Validator;
 
 class S3DiskProvider extends AbstractServiceProvider
 {
