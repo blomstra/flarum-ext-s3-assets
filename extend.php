@@ -11,7 +11,11 @@
 
 namespace Blomstra\S3Assets;
 
+use Blomstra\S3Assets\Frontend\Versioner;
 use Flarum\Extend;
+use Flarum\Extension\Extension;
+use Flarum\Frontend\Compiler\VersionerInterface;
+use Illuminate\Contracts\Container\Container;
 
 return [
     (new Extend\Frontend('admin'))
@@ -22,9 +26,15 @@ return [
     new Extend\Locales(__DIR__.'/locale'),
 
     (new Extend\ServiceProvider())
-        ->register(Provider\S3DiskProvider::class)
-        ->register(Provider\FrontendServiceProvider::class),
+        ->register(Provider\S3DiskProvider::class),
 
     (new Extend\Console())
         ->command(Console\MoveAssetsCommand::class),
+
+    (new class implements Extend\ExtenderInterface {
+        public function extend(Container $container, Extension $extension = null)
+        {
+            $container->bind(VersionerInterface::class, Versioner::class);
+        }
+    })
 ];
