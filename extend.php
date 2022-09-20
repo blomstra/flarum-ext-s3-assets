@@ -30,11 +30,4 @@ return [
 
     (new Extend\Console())
         ->command(Console\MoveAssetsCommand::class),
-
-    (new class implements Extend\ExtenderInterface {
-        public function extend(Container $container, Extension $extension = null)
-        {
-            $container->bind(VersionerInterface::class, Versioner::class);
-        }
-    })
 ];

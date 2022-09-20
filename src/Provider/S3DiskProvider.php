@@ -13,6 +13,8 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Factory;
+use Illuminate\Validation\Validator;
 
 class S3DiskProvider extends AbstractServiceProvider
 {
@@ -20,12 +22,10 @@ class S3DiskProvider extends AbstractServiceProvider
      * @var boolean
      */
     protected $failedValidation = false;
-    
+
     public function register()
     {
-        // This won't work until ?Flarum 1.5 - see https://github.com/flarum/framework/issues/3583
-        // Until then, we have to implement our own `Assets` from `FrontendServiceProvider`
-        //$this->container->bind(VersionerInterface::class, Versioner::class);
+        $this->container->bind(VersionerInterface::class, Versioner::class);
     }
 
     public function boot()
@@ -51,7 +51,7 @@ class S3DiskProvider extends AbstractServiceProvider
 
                     // Maintain compatibility with previous implementations where profile covers used 'profile-covers' for the root, rather than 'covers'.
                     $root = $disk === 'sycho-profile-cover' ? 'profile-covers' : Str::afterLast($diskConfig['root'], '/');
-    
+
                     $filesystems['disks'][$disk] = array_merge($s3, [
                         'root' => $root
                     ]);
@@ -107,7 +107,7 @@ class S3DiskProvider extends AbstractServiceProvider
         $region = env('AWS_DEFAULT_REGION', $settings->get('fof-upload.awsS3Region'));
         $cdnUrl = env('AWS_URL', $settings->get('fof-upload.cdnUrl'));
         $pathStyle = (bool) (env('AWS_PATH_STYLE_ENDPOINT', $settings->get('fof-upload.awsS3UsePathStyleEndpoint')));
-        
+
         if (! $cdnUrl) {
             $cdnUrl = sprintf('https://%s.s3.%s.amazonaws.com', $bucket, $region);
             $pathStyle = false;
@@ -136,7 +136,19 @@ class S3DiskProvider extends AbstractServiceProvider
 
     protected function configValid(array $s3Config): bool
     {
-        // TODO implement this!
-        return true;
+        $validator = resolve(Factory::class)->make($s3Config, [
+            'driver' => 'required|in:s3',
+            'key' => 'required|string',
+            'secret' => 'required|string',
+            'region' => 'required|string',
+            'bucket' => 'required|string',
+            'url' => 'required|url',
+            'endpoint' => 'required|url',
+            'use_path_style_endpoint' => 'required|bool',
+            'visibility' => 'required|string',
+            'set_by_environment' => 'required|bool',
+        ]);
+
+        return $validator->passes();
     }
 }
