@@ -21,10 +21,13 @@ class S3DiskProvider extends AbstractServiceProvider
      * @var boolean
      */
     protected $failedValidation = false;
+    public static bool $bindVersioner = true;
 
     public function register()
     {
-        $this->container->bind(VersionerInterface::class, Versioner::class);
+        if (static::$bindVersioner) {
+            $this->container->bind(VersionerInterface::class, Versioner::class);
+        }
     }
 
     public function boot()
