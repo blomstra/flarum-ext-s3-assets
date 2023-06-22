@@ -37,6 +37,11 @@ class MoveAssetsCommand extends AbstractCommand
     protected $url;
 
     /**
+    * @var Paths
+    */
+    protected $paths;
+
+    /**
      * @var AssetsPublishCommand
      */
     protected $publishCommand;
