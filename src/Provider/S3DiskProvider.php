@@ -72,6 +72,10 @@ class S3DiskProvider extends AbstractServiceProvider
         $this->container->singleton('filesystem.disk', function (Container $container) {
             return $container['filesystem']->disk($this->getDefaultDriver());
         });
+
+        $this->container->singleton('filesystem.cloud', function (Container $container) {
+            return $container['filesystem']->disk($this->getDefaultDriver());
+        });
     }
 
     /**
