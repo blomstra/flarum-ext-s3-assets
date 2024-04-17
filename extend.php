@@ -11,11 +11,7 @@
 
 namespace Blomstra\S3Assets;
 
-use Blomstra\S3Assets\Frontend\Versioner;
 use Flarum\Extend;
-use Flarum\Extension\Extension;
-use Flarum\Frontend\Compiler\VersionerInterface;
-use Illuminate\Contracts\Container\Container;
 
 return [
     (new Extend\Frontend('admin'))
@@ -30,4 +26,8 @@ return [
 
     (new Extend\Console())
         ->command(Console\MoveAssetsCommand::class),
+
+    (new Extend\Filesystem())
+        ->driver('s3', Driver\S3Driver::class)
+        ->driver('local', Driver\S3Driver::class)
 ];
