@@ -11,6 +11,7 @@
 
 namespace Blomstra\S3Assets;
 
+use Blomstra\S3Assets\Extend\Drivers;
 use Flarum\Extend;
 
 return [
@@ -27,7 +28,5 @@ return [
     (new Extend\Console())
         ->command(Console\MoveAssetsCommand::class),
 
-    (new Extend\Filesystem())
-        ->driver('s3', Driver\S3Driver::class)
-        ->driver('local', Driver\S3Driver::class)
+    new Drivers(),
 ];

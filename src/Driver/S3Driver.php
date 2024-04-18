@@ -2,6 +2,7 @@
 
 namespace Blomstra\S3Assets\Driver;
 
+use Blomstra\S3Assets\Driver\Config as DriverConfig;
 use Flarum\Filesystem\DriverInterface;
 use Flarum\Foundation\Config;
 use Flarum\Foundation\Paths;
@@ -15,7 +16,7 @@ class S3Driver implements DriverInterface
 {
     protected FilesystemManager $manager;
 
-    public function __construct(protected Paths $paths)
+    public function __construct(protected Paths $paths, protected DriverConfig $config)
     {
         $this->manager = new FilesystemManager(resolve(Container::class));
     }
@@ -30,38 +31,8 @@ class S3Driver implements DriverInterface
         $root = str_replace($this->paths->public, '', $root);
 
         return $this->manager->createS3Driver(array_merge(
-            $this->config($settings),
+            $this->config->config(),
             ['root' => $root]
         ));
-    }
-
-    protected function config(SettingsRepositoryInterface $settings): array
-    {
-        $bucket = env('AWS_BUCKET', $settings->get('fof-upload.awsS3Bucket'));
-        $region = env('AWS_DEFAULT_REGION', $settings->get('fof-upload.awsS3Region'));
-        $cdnUrl = env('AWS_URL', $settings->get('fof-upload.cdnUrl'));
-        $pathStyle = (bool) (env('AWS_PATH_STYLE_ENDPOINT', $settings->get('fof-upload.awsS3UsePathStyleEndpoint')));
-
-        if (! $cdnUrl) {
-            $cdnUrl = sprintf('https://%s.s3.%s.amazonaws.com', $bucket, $region);
-            $pathStyle = false;
-        }
-
-        $setByEnv = (env('AWS_ACCESS_KEY_ID') || env('AWS_SECRET_ACCESS_KEY') || env('AWS_ENDPOINT'));
-
-        return [
-            'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID', $settings->get('fof-upload.awsS3Key')),
-            'secret' => env('AWS_SECRET_ACCESS_KEY', $settings->get('fof-upload.awsS3Secret')),
-            'region' => $region,
-            'bucket' => $bucket,
-            'url' => $cdnUrl,
-            'endpoint' => env('AWS_ENDPOINT', $settings->get('fof-upload.awsS3Endpoint')),
-            'use_path_style_endpoint' => $pathStyle,
-            'set_by_environment' => $setByEnv,
-            'options' => [
-                'ACL' => env('AWS_ACL', $settings->get('fof-upload.awsS3ACL')),
-            ]
-        ];
     }
 }
