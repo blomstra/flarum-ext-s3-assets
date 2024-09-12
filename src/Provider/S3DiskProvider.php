@@ -4,6 +4,7 @@ namespace Blomstra\S3Assets\Provider;
 
 use Blomstra\S3Assets\Driver\Config;
 use Blomstra\S3Assets\Frontend\Versioner;
+use Flarum\Filesystem\FilesystemManager;
 use Flarum\Foundation\AbstractServiceProvider;
 use Flarum\Frontend\Compiler\VersionerInterface;
 

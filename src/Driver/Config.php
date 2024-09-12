@@ -18,7 +18,7 @@ class Config
             'secret' => 'required|string',
             'region' => 'required|string',
             'bucket' => 'required|string',
-            'url' => 'required|url',
+            'url' => 'url',
             'endpoint' => 'required|url',
             'use_path_style_endpoint' => 'required|bool',
             'options.ACL' => 'required|string',
